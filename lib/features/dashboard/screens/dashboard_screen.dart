@@ -4,6 +4,7 @@ import '../../../core/providers/auth_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../auth/screens/login_screen.dart';
 import '../../perfil/screens/perfil_screen.dart';
+import '../../acerca/screens/acerca_screen.dart';
 // ─────────────────────────────────────────────────────────────
 //  Datos del slider
 // ─────────────────────────────────────────────────────────────
@@ -576,7 +577,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
 
           const Divider(),
-          _drawerItem(Icons.info_outline_rounded, 'Acerca De'),
+          _drawerItem(Icons.info_outline_rounded, 'Acerca de', onTap: () {
+            Navigator.pop(context);
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (_) => const AcercaScreen()),
+            );
+          }),
 
           const Spacer(),
 
