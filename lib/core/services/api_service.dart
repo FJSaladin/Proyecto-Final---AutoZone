@@ -554,7 +554,7 @@ class CatalogoRepository {
   Future<Map<String, dynamic>> listar({
     String? marca,   String? modelo,  int? anio,
     double? precioMin, double? precioMax, int page = 1, int limit = 20,
-  }) => _api.get('/catalogo', params: {
+  }) => _api.getAuth('/catalogo', params: {
     if (marca != null) 'marca': marca,
     if (modelo != null) 'modelo': modelo,
     if (anio != null) 'anio': anio,
@@ -564,5 +564,5 @@ class CatalogoRepository {
   });
 
   Future<Map<String, dynamic>> detalle(int id) =>
-      _api.get('/catalogo/detalle', params: {'id': id});
+      _api.getAuth('/catalogo/detalle', params: {'id': id});
 }

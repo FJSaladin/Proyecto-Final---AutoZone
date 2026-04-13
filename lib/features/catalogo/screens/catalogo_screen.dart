@@ -19,9 +19,9 @@ class _CatalogoScreenState extends State<CatalogoScreen> {
   final _minCtrl    = TextEditingController();
   final _maxCtrl    = TextEditingController();
 
-  List<dynamic> _lista    = [];
-  bool          _cargando = true;
-  String        _error    = '';
+  List<dynamic> _lista           = [];
+  bool          _cargando        = true;
+  String        _error           = '';
   bool          _filtrosVisibles = false;
 
   @override
@@ -42,7 +42,6 @@ class _CatalogoScreenState extends State<CatalogoScreen> {
 
   Future<void> _cargar() async {
     setState(() { _cargando = true; _error = ''; });
-    FocusScope.of(context).unfocus();
     try {
       final res = await _repo.listar(
         marca:     _marcaCtrl.text.trim().isEmpty  ? null : _marcaCtrl.text.trim(),
@@ -52,19 +51,26 @@ class _CatalogoScreenState extends State<CatalogoScreen> {
         precioMax: double.tryParse(_maxCtrl.text.trim()),
         limit:     30,
       );
+      print('CATALOGO: $res');
       final data = res['data'];
-if (data is List) {
-  setState(() => _lista = data);
-} else if (data is Map && data['items'] != null) {
-  setState(() => _lista = data['items'] as List? ?? []);
-} else {
-  setState(() => _lista = []);
-}
+      if (data is List) {
+        setState(() => _lista = data);
+      } else if (data is Map) {
+        setState(() => _lista =
+            (data['items'] ?? data['data'] ?? data['catalogo'] ?? []) as List);
+      } else {
+        setState(() => _lista = []);
+      }
     } on ApiException catch (e) {
       setState(() => _error = e.message);
     } finally {
       setState(() => _cargando = false);
     }
+  }
+
+  void _buscar() {
+    FocusScope.of(context).unfocus();
+    _cargar();
   }
 
   void _limpiar() {
@@ -73,6 +79,7 @@ if (data is List) {
     _anioCtrl.clear();
     _minCtrl.clear();
     _maxCtrl.clear();
+    FocusScope.of(context).unfocus();
     _cargar();
   }
 
@@ -98,7 +105,6 @@ if (data is List) {
       ),
       body: Column(
         children: [
-          // ── Filtros (colapsables) ──────────────────────────
           AnimatedCrossFade(
             duration: const Duration(milliseconds: 250),
             crossFadeState: _filtrosVisibles
@@ -107,7 +113,6 @@ if (data is List) {
             firstChild: _buildFiltros(),
             secondChild: const SizedBox.shrink(),
           ),
-          // ── Resultados ─────────────────────────────────────
           Expanded(child: _buildContenido()),
         ],
       ),
@@ -124,11 +129,13 @@ if (data is List) {
           Row(
             children: [
               Expanded(
-                child: _campoFiltro(_marcaCtrl, 'Marca', Icons.directions_car_outlined),
+                child: _campoFiltro(
+                    _marcaCtrl, 'Marca', Icons.directions_car_outlined),
               ),
               const SizedBox(width: 10),
               Expanded(
-                child: _campoFiltro(_modeloCtrl, 'Modelo', Icons.car_repair_outlined),
+                child: _campoFiltro(
+                    _modeloCtrl, 'Modelo', Icons.car_repair_outlined),
               ),
             ],
           ),
@@ -162,7 +169,7 @@ if (data is List) {
             children: [
               Expanded(
                 child: ElevatedButton.icon(
-                  onPressed: _cargar,
+                  onPressed: _buscar,
                   icon: const Icon(Icons.search, size: 18),
                   label: const Text('Buscar'),
                   style: ElevatedButton.styleFrom(minimumSize: const Size(0, 42)),
@@ -195,10 +202,9 @@ if (data is List) {
         labelText: label,
         prefixIcon: Icon(icono, size: 18),
         isDense: true,
-        contentPadding:
-            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       ),
-      onSubmitted: (_) => _cargar(),
+      onSubmitted: (_) => _buscar(),
     );
   }
 
@@ -240,11 +246,11 @@ if (data is List) {
   }
 
   Widget _buildTarjeta(Map<String, dynamic> v) {
-    final foto  = v['fotoUrl']     as String?;
-    final marca = v['marca']       as String? ?? '';
-    final modelo= v['modelo']      as String? ?? '';
-    final anio  = v['anio']        as int?;
-    final precio= (v['precio'] as num?)?.toDouble() ?? 0.0;
+    final foto   = v['fotoUrl'] as String?;
+    final marca  = v['marca']   as String? ?? '';
+    final modelo = v['modelo']  as String? ?? '';
+    final anio   = v['anio']    as int?;
+    final precio = (v['precio'] as num?)?.toDouble() ?? 0.0;
 
     return GestureDetector(
       onTap: () => Navigator.push(
@@ -268,10 +274,8 @@ if (data is List) {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Foto
             ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
               child: SizedBox(
                 width: double.infinity,
                 height: 120,
@@ -286,7 +290,6 @@ if (data is List) {
                     : _fotoDefault(),
               ),
             ),
-            // Datos
             Padding(
               padding: const EdgeInsets.all(10),
               child: Column(
