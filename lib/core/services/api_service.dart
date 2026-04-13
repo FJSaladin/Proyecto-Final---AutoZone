@@ -1,3 +1,5 @@
+API
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -554,7 +556,7 @@ class CatalogoRepository {
   Future<Map<String, dynamic>> listar({
     String? marca,   String? modelo,  int? anio,
     double? precioMin, double? precioMax, int page = 1, int limit = 20,
-  }) => _api.getAuth('/catalogo', params: {
+  }) => _api.get('/catalogo', params: {
     if (marca != null) 'marca': marca,
     if (modelo != null) 'modelo': modelo,
     if (anio != null) 'anio': anio,
@@ -564,5 +566,5 @@ class CatalogoRepository {
   });
 
   Future<Map<String, dynamic>> detalle(int id) =>
-      _api.getAuth('/catalogo/detalle', params: {'id': id});
+      _api.get('/catalogo/detalle', params: {'id': id});
 }
