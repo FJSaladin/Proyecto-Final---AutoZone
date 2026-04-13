@@ -5,6 +5,8 @@ import '../../../core/theme/app_theme.dart';
 import '../../auth/screens/login_screen.dart';
 import '../../perfil/screens/perfil_screen.dart';
 import '../../acerca/screens/acerca_screen.dart';
+import '../../vehiculos/screens/mis_vehiculos_screen.dart';
+import '../../catalogo/screens/catalogo_screen.dart';
 // ─────────────────────────────────────────────────────────────
 //  Datos del slider
 // ─────────────────────────────────────────────────────────────
@@ -431,7 +433,23 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildAcceso(_AccesoItem item) {
     return GestureDetector(
       onTap: () {
-        // TODO: navegación a cada módulo
+        switch (item.etiqueta) {
+          case 'Mis Vehículos':
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+            break;
+          case 'Catálogo':
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const CatalogoScreen()));
+            break;
+          case 'Mantenimiento':
+            // Ir primero a Mis Vehículos para elegir el vehículo
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+            break;
+          default:
+            break;
+        }
       },
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -556,14 +574,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
           }),
           _drawerItem(Icons.newspaper_rounded, 'Noticias'),
           _drawerItem(Icons.forum_rounded, 'Foro'),
-          _drawerItem(Icons.directions_car_rounded, 'Catálogo'),
+          _drawerItem(Icons.directions_car_rounded, 'Catálogo', onTap: () {
+            Navigator.pop(context);
+            Navigator.push(context,
+                MaterialPageRoute(builder: (_) => const CatalogoScreen()));
+          }),
           _drawerItem(Icons.play_circle_rounded, 'Videos'),
 
           // Opciones con login
           if (auth.estaLogueado) ...[
             const Divider(),
-            _drawerItem(Icons.garage_rounded, 'Mis Vehículos'),
-            _drawerItem(Icons.build_rounded, 'Mantenimientos'),
+            _drawerItem(Icons.garage_rounded, 'Mis Vehículos', onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+            }),
+            _drawerItem(Icons.build_rounded, 'Mantenimientos', onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+            }),
             _drawerItem(Icons.local_gas_station_rounded, 'Combustible'),
             _drawerItem(Icons.account_balance_wallet_rounded, 'Gastos'),
             _drawerItem(Icons.forum_outlined, 'Mi Foro'),
