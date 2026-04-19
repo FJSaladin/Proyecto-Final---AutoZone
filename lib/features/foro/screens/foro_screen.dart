@@ -28,7 +28,7 @@ class _ForoScreenState extends State<ForoScreen> {
   Future<void> _cargarTemas() async {
     setState(() => _cargando = true);
     try {
-      final res = await _foroRepo.listarTemas();
+      final res = await _foroRepo.getTemas();
       if (mounted) {
         setState(() {
           _temas = (res['data'] as List).map((t) => Tema.fromJson(t)).toList();

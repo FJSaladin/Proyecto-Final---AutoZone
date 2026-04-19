@@ -26,7 +26,7 @@ class _NoticiasScreenState extends State<NoticiasScreen> {
   Future<void> _cargarNoticias() async {
     setState(() => _cargando = true);
     try {
-      final res = await _noticiasRepo.listar();
+      final res = await _noticiasRepo.getNoticias();
       if (mounted) {
         setState(() {
           _noticias = (res['data'] as List)

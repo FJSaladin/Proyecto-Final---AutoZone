@@ -27,7 +27,7 @@ class _DetalleNoticiaScreenState extends State<DetalleNoticiaScreen> {
   Future<void> _cargarDetalle() async {
     setState(() => _cargando = true);
     try {
-      final res = await _noticiasRepo.detalle(widget.noticiaId);
+      final res = await _noticiasRepo.getDetalle(widget.noticiaId);
       if (mounted) {
         setState(() {
           _noticia = Noticia.fromJson(res['data']);

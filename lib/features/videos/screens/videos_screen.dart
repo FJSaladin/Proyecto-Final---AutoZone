@@ -26,7 +26,7 @@ class _VideosScreenState extends State<VideosScreen> {
   Future<void> _cargarVideos() async {
     setState(() => _cargando = true);
     try {
-      final res = await _videosRepo.listar();
+      final res = await _videosRepo.getVideos();
       if (mounted) {
         setState(() {
           _videos = (res['data'] as List)

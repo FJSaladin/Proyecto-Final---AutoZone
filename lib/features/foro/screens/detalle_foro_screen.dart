@@ -28,7 +28,7 @@ class _DetalleForoScreenState extends State<DetalleForoScreen> {
   Future<void> _cargarDetalle() async {
     setState(() => _cargando = true);
     try {
-      final res = await _foroRepo.detalleTema(widget.temaId);
+      final res = await _foroRepo.getDetalle(widget.temaId);
       if (mounted) {
         setState(() {
           _tema = Tema.fromJson(res['data']);
