@@ -6,13 +6,17 @@ import '../../auth/screens/login_screen.dart';
 import '../../perfil/screens/perfil_screen.dart';
 import '../../acerca/screens/acerca_screen.dart';
 
-// Importaciones de módulos - Hecho por Sebastian Florentino
+// Importaciones de módulos - Sebastian Florentino
 import '../../noticias/screens/noticias_screen.dart';
 import '../../foro/screens/foro_screen.dart';
 import '../../videos/screens/videos_screen.dart';
 import '../../combustible/screens/combustible_screen.dart';
 import '../../gastos/screens/gastos_screen.dart';
 import '../../ingresos/screens/ingresos_screen.dart';
+
+// Importaciones de módulos - Luis Smerling (Restaurado por Sebastian Florentino)
+import '../../vehiculos/screens/mis_vehiculos_screen.dart';
+import '../../catalogo/screens/catalogo_screen.dart';
 
 // ─────────────────────────────────────────────────────────────
 //  Datos del slider
@@ -119,7 +123,6 @@ const _accesosPrivados = [
     color: Color(0xFF4527A0),
     requiereLogin: true,
   ),
-  // Item de Ingresos añadido - Hecho por Sebastian Florentino
   _AccesoItem(
     icono: Icons.monetization_on_rounded,
     etiqueta: 'Ingresos',
@@ -434,7 +437,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             crossAxisCount: 4,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 0.75, // Ajustado de 0.85 a 0.75 para evitar overflow - Hecho por Sebastian Florentino
+            childAspectRatio: 0.75, // Ajustado para evitar overflow - Hecho por Sebastian Florentino
           ),
           itemCount: items.length,
           itemBuilder: (_, i) => _buildAcceso(items[i]),
@@ -447,29 +450,22 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildAcceso(_AccesoItem item) {
     return GestureDetector(
       onTap: () {
-        // Lógica de navegación - Hecho por Sebastian Florentino
+        // Restauración completa de enrutamiento - Hecho por Sebastian Florentino
         Widget? screen;
         switch (item.etiqueta) {
-          case 'Noticias':
-            screen = const NoticiasScreen();
-            break;
-          case 'Foro':
-            screen = const ForoScreen();
-            break;
-          case 'Videos':
-            screen = const VideosScreen();
-            break;
-          case 'Combustible':
-            screen = const CombustibleScreen();
-            break;
-          case 'Gastos':
-            screen = const GastosScreen();
-            break;
-          case 'Ingresos':
-            screen = const IngresosScreen();
-            break;
-          default:
-            return;
+          // Módulos Sebastian Florentino
+          case 'Noticias': screen = const NoticiasScreen(); break;
+          case 'Foro': screen = const ForoScreen(); break;
+          case 'Videos': screen = const VideosScreen(); break;
+          case 'Combustible': screen = const CombustibleScreen(); break;
+          case 'Gastos': screen = const GastosScreen(); break;
+          case 'Ingresos': screen = const IngresosScreen(); break;
+          
+          // Módulos Luis Smerling (Restaurados)
+          case 'Mis Vehículos': screen = const MisVehiculosScreen(); break;
+          case 'Catálogo': screen = const CatalogoScreen(); break;
+          case 'Mantenimiento': screen = const MisVehiculosScreen(); break;
+          default: return;
         }
 
         if (screen != null) {
@@ -561,7 +557,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Drawer(
       child: Column(
         children: [
-          // Cabecera
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(color: AppColors.primary),
             currentAccountPicture: CircleAvatar(
@@ -571,29 +566,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   : null,
               child: auth.usuario?.fotoUrl == null
                   ? Icon(
-                      auth.estaLogueado
-                          ? Icons.person
-                          : Icons.person_outline,
-                      color: Colors.white,
-                      size: 32,
+                      auth.estaLogueado ? Icons.person : Icons.person_outline,
+                      color: Colors.white, size: 32,
                     )
                   : null,
             ),
             accountName: Text(
-              auth.estaLogueado
-                  ? auth.usuario!.nombreCompleto
-                  : 'Invitado',
+              auth.estaLogueado ? auth.usuario!.nombreCompleto : 'Invitado',
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
             accountEmail: Text(
-              auth.estaLogueado
-                  ? auth.usuario!.correo
-                  : 'Inicia sesión para más opciones',
+              auth.estaLogueado ? auth.usuario!.correo : 'Inicia sesión para más opciones',
               style: const TextStyle(fontSize: 12),
             ),
           ),
 
-          // Se envuelve la lista en Expanded y ListView para evitar overflow - Hecho por Sebastian Florentino
           Expanded(
             child: ListView(
               padding: EdgeInsets.zero,
@@ -609,17 +596,25 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   Navigator.pop(context);
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const ForoScreen()));
                 }),
-                _drawerItem(Icons.directions_car_rounded, 'Catálogo'),
+                _drawerItem(Icons.directions_car_rounded, 'Catálogo', onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const CatalogoScreen()));
+                }),
                 _drawerItem(Icons.play_circle_rounded, 'Videos', onTap: () {
                   Navigator.pop(context);
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const VideosScreen()));
                 }),
 
-                // Opciones con login
                 if (auth.estaLogueado) ...[
                   const Divider(),
-                  _drawerItem(Icons.garage_rounded, 'Mis Vehículos'),
-                  _drawerItem(Icons.build_rounded, 'Mantenimientos'),
+                  _drawerItem(Icons.garage_rounded, 'Mis Vehículos', onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+                  }),
+                  _drawerItem(Icons.build_rounded, 'Mantenimientos', onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+                  }),
                   _drawerItem(Icons.local_gas_station_rounded, 'Combustible', onTap: () {
                     Navigator.pop(context);
                     Navigator.push(context, MaterialPageRoute(builder: (_) => const CombustibleScreen()));
@@ -634,34 +629,24 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   }),
                   _drawerItem(Icons.person_outline, 'Mi Perfil', onTap: () {
                     Navigator.pop(context);
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(builder: (_) => const PerfilScreen()),
-                    );
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const PerfilScreen()));
                   }),
                 ],
 
                 const Divider(),
                 _drawerItem(Icons.info_outline_rounded, 'Acerca de', onTap: () {
                   Navigator.pop(context);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (_) => const AcercaScreen()),
-                  );
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const AcercaScreen()));
                 }),
               ],
             ),
           ),
 
-          // Login / Logout fijo al fondo
           const Divider(),
           if (auth.estaLogueado)
             ListTile(
               leading: const Icon(Icons.logout, color: AppColors.error),
-              title: const Text(
-                'Cerrar sesión',
-                style: TextStyle(color: AppColors.error),
-              ),
+              title: const Text('Cerrar sesión', style: TextStyle(color: AppColors.error)),
               onTap: () {
                 Navigator.pop(context);
                 auth.logout();
@@ -670,16 +655,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           else
             ListTile(
               leading: const Icon(Icons.login, color: AppColors.primary),
-              title: const Text(
-                'Iniciar sesión',
-                style: TextStyle(color: AppColors.primary),
-              ),
+              title: const Text('Iniciar sesión', style: TextStyle(color: AppColors.primary)),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => const LoginScreen()),
-                );
+                Navigator.push(context, MaterialPageRoute(builder: (_) => const LoginScreen()));
               },
             ),
 
@@ -689,14 +668,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  ListTile _drawerItem(IconData icono, String titulo,
-      {VoidCallback? onTap}) {
+  ListTile _drawerItem(IconData icono, String titulo, {VoidCallback? onTap}) {
     return ListTile(
       leading: Icon(icono, color: AppColors.textSecondary, size: 22),
-      title: Text(
-        titulo,
-        style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
-      ),
+      title: Text(titulo, style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
       onTap: onTap ?? () => Navigator.pop(context),
       dense: true,
     );
