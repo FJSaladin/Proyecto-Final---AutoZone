@@ -5,8 +5,15 @@ import '../../../core/theme/app_theme.dart';
 import '../../auth/screens/login_screen.dart';
 import '../../perfil/screens/perfil_screen.dart';
 import '../../acerca/screens/acerca_screen.dart';
-import '../../vehiculos/screens/mis_vehiculos_screen.dart';
-import '../../catalogo/screens/catalogo_screen.dart';
+
+// Importaciones de módulos - Hecho por Sebastian Florentino
+import '../../noticias/screens/noticias_screen.dart';
+import '../../foro/screens/foro_screen.dart';
+import '../../videos/screens/videos_screen.dart';
+import '../../combustible/screens/combustible_screen.dart';
+import '../../gastos/screens/gastos_screen.dart';
+import '../../ingresos/screens/ingresos_screen.dart';
+
 // ─────────────────────────────────────────────────────────────
 //  Datos del slider
 // ─────────────────────────────────────────────────────────────
@@ -112,6 +119,13 @@ const _accesosPrivados = [
     color: Color(0xFF4527A0),
     requiereLogin: true,
   ),
+  // Item de Ingresos añadido - Hecho por Sebastian Florentino
+  _AccesoItem(
+    icono: Icons.monetization_on_rounded,
+    etiqueta: 'Ingresos',
+    color: Color(0xFF2E7D32),
+    requiereLogin: true,
+  ),
 ];
 
 // ─────────────────────────────────────────────────────────────
@@ -163,9 +177,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         title: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-             Icon(Icons.directions_car, size: 22),
-             SizedBox(width: 8),
-             Text('AutoZone ITLA'),
+            Icon(Icons.directions_car, size: 22),
+            SizedBox(width: 8),
+            Text('AutoZone ITLA'),
           ],
         ),
         actions: [
@@ -187,13 +201,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       : null,
                   child: auth.usuario?.fotoUrl == null
                       ? Text(
-                          auth.usuario?.nombre[0].toUpperCase() ?? 'U',
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 14,
-                          ),
-                        )
+                    auth.usuario?.nombre[0].toUpperCase() ?? 'U',
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 14,
+                    ),
+                  )
                       : null,
                 ),
               ),
@@ -270,7 +284,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 _slides.length,
-                (i) => AnimatedContainer(
+                    (i) => AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   width:  _paginaActual == i ? 20 : 6,
@@ -433,22 +447,34 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildAcceso(_AccesoItem item) {
     return GestureDetector(
       onTap: () {
+        // Lógica de navegación - Agregado por Sebastian Florentino
+        Widget? screen;
         switch (item.etiqueta) {
-          case 'Mis Vehículos':
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+          case 'Noticias':
+            screen = const NoticiasScreen();
             break;
-          case 'Catálogo':
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const CatalogoScreen()));
+          case 'Foro':
+            screen = const ForoScreen();
             break;
-          case 'Mantenimiento':
-            // Ir primero a Mis Vehículos para elegir el vehículo
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+          case 'Videos':
+            screen = const VideosScreen();
+            break;
+          case 'Combustible':
+            screen = const CombustibleScreen();
+            break;
+          case 'Gastos':
+            screen = const GastosScreen();
+            break;
+          case 'Ingresos':
+            screen = const IngresosScreen();
             break;
           default:
-            break;
+          // Otros módulos pendientes del Integrante 2
+            return;
+        }
+
+        if (screen != null) {
+          Navigator.push(context, MaterialPageRoute(builder: (_) => screen!));
         }
       },
       child: Column(
@@ -546,12 +572,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   : null,
               child: auth.usuario?.fotoUrl == null
                   ? Icon(
-                      auth.estaLogueado
-                          ? Icons.person
-                          : Icons.person_outline,
-                      color: Colors.white,
-                      size: 32,
-                    )
+                auth.estaLogueado
+                    ? Icons.person
+                    : Icons.person_outline,
+                color: Colors.white,
+                size: 32,
+              )
                   : null,
             ),
             accountName: Text(
@@ -568,35 +594,41 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
 
-          // Opciones siempre visibles
+          // Opciones siempre visibles - Navegación hecha por Sebastian Florentino
           _drawerItem(Icons.home_rounded, 'Inicio', onTap: () {
             Navigator.pop(context);
           }),
-          _drawerItem(Icons.newspaper_rounded, 'Noticias'),
-          _drawerItem(Icons.forum_rounded, 'Foro'),
-          _drawerItem(Icons.directions_car_rounded, 'Catálogo', onTap: () {
+          _drawerItem(Icons.newspaper_rounded, 'Noticias', onTap: () {
             Navigator.pop(context);
-            Navigator.push(context,
-                MaterialPageRoute(builder: (_) => const CatalogoScreen()));
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const NoticiasScreen()));
           }),
-          _drawerItem(Icons.play_circle_rounded, 'Videos'),
+          _drawerItem(Icons.forum_rounded, 'Foro', onTap: () {
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const ForoScreen()));
+          }),
+          _drawerItem(Icons.directions_car_rounded, 'Catálogo'),
+          _drawerItem(Icons.play_circle_rounded, 'Videos', onTap: () {
+            Navigator.pop(context);
+            Navigator.push(context, MaterialPageRoute(builder: (_) => const VideosScreen()));
+          }),
 
-          // Opciones con login
+          // Opciones con login - Navegación hecha por Sebastian Florentino
           if (auth.estaLogueado) ...[
             const Divider(),
-            _drawerItem(Icons.garage_rounded, 'Mis Vehículos', onTap: () {
+            _drawerItem(Icons.garage_rounded, 'Mis Vehículos'),
+            _drawerItem(Icons.build_rounded, 'Mantenimientos'),
+            _drawerItem(Icons.local_gas_station_rounded, 'Combustible', onTap: () {
               Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const CombustibleScreen()));
             }),
-            _drawerItem(Icons.build_rounded, 'Mantenimientos', onTap: () {
+            _drawerItem(Icons.account_balance_wallet_rounded, 'Gastos', onTap: () {
               Navigator.pop(context);
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const GastosScreen()));
             }),
-            _drawerItem(Icons.local_gas_station_rounded, 'Combustible'),
-            _drawerItem(Icons.account_balance_wallet_rounded, 'Gastos'),
-            _drawerItem(Icons.forum_outlined, 'Mi Foro'),
+            _drawerItem(Icons.monetization_on_rounded, 'Ingresos', onTap: () {
+              Navigator.pop(context);
+              Navigator.push(context, MaterialPageRoute(builder: (_) => const IngresosScreen()));
+            }),
             _drawerItem(Icons.person_outline, 'Mi Perfil', onTap: () {
               Navigator.pop(context);
               Navigator.push(
