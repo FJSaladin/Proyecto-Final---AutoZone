@@ -14,12 +14,13 @@ class Ingreso {
   });
 
   factory Ingreso.fromJson(Map<String, dynamic> json) {
+    // Solución al error de casteo - Hecho por Sebastian Florentino
     return Ingreso(
-      id: json['id'] as int,
-      vehiculoId: json['vehiculo_id'] as int,
-      monto: (json['monto'] as num).toDouble(),
-      concepto: json['concepto'] as String,
-      fecha: json['fecha'] as String,
+      id: int.tryParse(json['id'].toString()) ?? 0,
+      vehiculoId: int.tryParse(json['vehiculo_id'].toString()) ?? 0,
+      monto: double.tryParse(json['monto'].toString()) ?? 0.0,
+      concepto: json['concepto'] as String? ?? '',
+      fecha: json['fecha'] as String? ?? '',
     );
   }
 }
