@@ -505,10 +505,10 @@ class ForoRepository {
   final _api = ApiService();
 
   Future<Map<String, dynamic>> getTemas({int page = 1, int limit = 20}) =>
-      _api.get('/foro/temas', params: {'page': page, 'limit': limit});
+      _api.getAuth('/foro/temas', params: {'page': page, 'limit': limit});
 
   Future<Map<String, dynamic>> getDetalle(int id) =>
-      _api.get('/foro/detalle', params: {'id': id});
+      _api.getAuth('/foro/detalle', params: {'id': id});
 
   Future<Map<String, dynamic>> getMisTemas({int page = 1, int limit = 20}) =>
       _api.getAuth('/foro/mis-temas',
@@ -532,10 +532,10 @@ class ForoRepository {
 class NoticiasRepository {
   final _api = ApiService();
 
-  Future<Map<String, dynamic>> getNoticias() => _api.get('/noticias');
+  Future<Map<String, dynamic>> getNoticias() => _api.getAuth('/noticias');
 
   Future<Map<String, dynamic>> getDetalle(int id) =>
-      _api.get('/noticias/detalle', params: {'id': id});
+      _api.getAuth('/noticias/detalle', params: {'id': id});
 }
 
 // ── Videos  (Integrante 3) ────────────────────────────────────
@@ -543,7 +543,7 @@ class NoticiasRepository {
 class VideosRepository {
   final _api = ApiService();
 
-  Future<Map<String, dynamic>> getVideos() => _api.get('/videos');
+  Future<Map<String, dynamic>> getVideos() => _api.getAuth('/videos');
 }
 
 // ── Catálogo  (Integrante 2) ──────────────────────────────────
