@@ -6,7 +6,7 @@ class CategoriaGasto {
 
   factory CategoriaGasto.fromJson(Map<String, dynamic> json) {
     return CategoriaGasto(
-      id: json['id'] as int,
+      id: int.tryParse(json['id'].toString()) ?? 0,
       nombre: json['nombre'] as String,
     );
   }
@@ -32,14 +32,15 @@ class Gasto {
   });
 
   factory Gasto.fromJson(Map<String, dynamic> json) {
+    // Solución al error de casteo - Hecho por Sebastian Florentino
     return Gasto(
-      id: json['id'] as int,
-      vehiculoId: json['vehiculo_id'] as int,
-      categoriaId: json['categoria_id'] as int,
+      id: int.tryParse(json['id'].toString()) ?? 0,
+      vehiculoId: int.tryParse(json['vehiculo_id'].toString()) ?? 0,
+      categoriaId: int.tryParse(json['categoria_id'].toString()) ?? 0,
       categoriaNombre: json['categoriaNombre'] as String? ?? 'Sin categoría',
-      monto: (json['monto'] as num).toDouble(),
+      monto: double.tryParse(json['monto'].toString()) ?? 0.0,
       descripcion: json['descripcion'] as String?,
-      fecha: json['fecha'] as String,
+      fecha: json['fecha'] as String? ?? '',
     );
   }
 }
