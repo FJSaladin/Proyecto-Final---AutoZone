@@ -14,10 +14,6 @@ import '../../combustible/screens/combustible_screen.dart';
 import '../../gastos/screens/gastos_screen.dart';
 import '../../ingresos/screens/ingresos_screen.dart';
 
-// Importaciones de módulos - Hecho por Luis Smerling
-import '../../vehiculos/screens/mis_vehiculos_screen.dart';
-import '../../catalogo/screens/catalogo_screen.dart';
-
 // ─────────────────────────────────────────────────────────────
 //  Datos del slider
 // ─────────────────────────────────────────────────────────────
@@ -181,9 +177,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
         title: const Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(Icons.directions_car, size: 22),
-            SizedBox(width: 8),
-            Text('AutoZone ITLA'),
+             Icon(Icons.directions_car, size: 22),
+             SizedBox(width: 8),
+             Text('AutoZone ITLA'),
           ],
         ),
         actions: [
@@ -205,13 +201,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       : null,
                   child: auth.usuario?.fotoUrl == null
                       ? Text(
-                    auth.usuario?.nombre[0].toUpperCase() ?? 'U',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 14,
-                    ),
-                  )
+                          auth.usuario?.nombre[0].toUpperCase() ?? 'U',
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 14,
+                          ),
+                        )
                       : null,
                 ),
               ),
@@ -233,21 +229,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
         ],
       ),
 
+      // ── Drawer ──────────────────────────────────────────────
       drawer: _buildDrawer(auth),
 
       body: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            // ── Slider ────────────────────────────────────────
             _buildSlider(),
+
             const SizedBox(height: 24),
+
+            // ── Saludo si está logueado ────────────────────────
             if (auth.estaLogueado) _buildSaludo(auth),
+
+            // ── Accesos rápidos públicos ───────────────────────
             _buildSeccion('Explorar', _accesosPublicos),
+
             const SizedBox(height: 8),
+
+            // ── Accesos privados (si está logueado) ───────────
             if (auth.estaLogueado)
               _buildSeccion('Mi vehículo', _accesosPrivados)
             else
               _buildBannerLogin(),
+
             const SizedBox(height: 32),
           ],
         ),
@@ -255,7 +262,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // ── Slider ──────────────────────────────────────────────────
+  // ── Slider de imágenes ──────────────────────────────────────
 
   Widget _buildSlider() {
     return SizedBox(
@@ -268,6 +275,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             onPageChanged: (i) => setState(() => _paginaActual = i),
             itemBuilder: (_, i) => _buildSlide(_slides[i]),
           ),
+          // Indicadores
           Positioned(
             bottom: 12,
             left: 0,
@@ -276,7 +284,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: List.generate(
                 _slides.length,
-                    (i) => AnimatedContainer(
+                (i) => AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   margin: const EdgeInsets.symmetric(horizontal: 3),
                   width:  _paginaActual == i ? 20 : 6,
@@ -305,9 +313,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
           fit: BoxFit.cover,
           errorBuilder: (_, __, ___) => Container(
             color: AppColors.primary,
-            child: const Icon(Icons.directions_car, size: 64, color: Colors.white),
+            child: const Icon(Icons.directions_car,
+                size: 64, color: Colors.white),
           ),
         ),
+        // Gradiente oscuro abajo
         Container(
           decoration: BoxDecoration(
             gradient: LinearGradient(
@@ -320,6 +330,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
         ),
+        // Texto
         Positioned(
           bottom: 32,
           left: 16,
@@ -361,11 +372,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         decoration: BoxDecoration(
           color: AppColors.primary.withValues(alpha: 0.08),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+          border: Border.all(
+            color: AppColors.primary.withValues(alpha: 0.2),
+          ),
         ),
         child: Row(
           children: [
-            const Icon(Icons.waving_hand_rounded, color: AppColors.primary, size: 28),
+            const Icon(Icons.waving_hand_rounded,
+                color: AppColors.primary, size: 28),
             const SizedBox(width: 12),
             Expanded(
               child: Column(
@@ -381,7 +395,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
                   const Text(
                     'Bienvenido a AutoZone ITLA',
-                    style: TextStyle(fontSize: 12, color: AppColors.textSecondary),
+                    style: TextStyle(
+                      fontSize: 12,
+                      color: AppColors.textSecondary,
+                    ),
                   ),
                 ],
               ),
@@ -392,7 +409,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // ── Sección de accesos ──────────────────────────────────────
+  // ── Sección de accesos rápidos ──────────────────────────────
 
   Widget _buildSeccion(String titulo, List<_AccesoItem> items) {
     return Column(
@@ -417,7 +434,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             crossAxisCount: 4,
             mainAxisSpacing: 12,
             crossAxisSpacing: 12,
-            childAspectRatio: 0.85,
+            childAspectRatio: 0.75, // Ajustado de 0.85 a 0.75 para evitar overflow - Hecho por Sebastian Florentino
           ),
           itemCount: items.length,
           itemBuilder: (_, i) => _buildAcceso(items[i]),
@@ -430,9 +447,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget _buildAcceso(_AccesoItem item) {
     return GestureDetector(
       onTap: () {
+        // Lógica de navegación - Hecho por Sebastian Florentino
         Widget? screen;
         switch (item.etiqueta) {
-          // Módulos de Sebastian Florentino
           case 'Noticias':
             screen = const NoticiasScreen();
             break;
@@ -451,19 +468,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
           case 'Ingresos':
             screen = const IngresosScreen();
             break;
-          // Módulos de Luis Smerling
-          case 'Mis Vehículos':
-            screen = const MisVehiculosScreen();
-            break;
-          case 'Catálogo':
-            screen = const CatalogoScreen();
-            break;
-          case 'Mantenimiento':
-            screen = const MisVehiculosScreen();
-            break;
           default:
             return;
         }
+
         if (screen != null) {
           Navigator.push(context, MaterialPageRoute(builder: (_) => screen!));
         }
@@ -477,7 +485,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
             decoration: BoxDecoration(
               color: item.color.withValues(alpha: 0.12),
               borderRadius: BorderRadius.circular(16),
-              border: Border.all(color: item.color.withValues(alpha: 0.25)),
+              border: Border.all(
+                color: item.color.withValues(alpha: 0.25),
+              ),
             ),
             child: Icon(item.icono, color: item.color, size: 26),
           ),
@@ -497,7 +507,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  // ── Banner login ────────────────────────────────────────────
+  // ── Banner para usuarios sin login ──────────────────────────
 
   Widget _buildBannerLogin() {
     return Padding(
@@ -507,11 +517,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
         decoration: BoxDecoration(
           color: AppColors.secondary.withValues(alpha: 0.06),
           borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.secondary.withValues(alpha: 0.2)),
+          border: Border.all(
+            color: AppColors.secondary.withValues(alpha: 0.2),
+          ),
         ),
         child: Column(
           children: [
-            const Icon(Icons.lock_open_rounded, size: 36, color: AppColors.secondary),
+            const Icon(Icons.lock_open_rounded,
+                size: 36, color: AppColors.secondary),
             const SizedBox(height: 10),
             const Text(
               'Inicia sesión para acceder a\ntus vehículos y más funciones',
@@ -548,6 +561,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
     return Drawer(
       child: Column(
         children: [
+          // Cabecera
           UserAccountsDrawerHeader(
             decoration: const BoxDecoration(color: AppColors.primary),
             currentAccountPicture: CircleAvatar(
@@ -557,14 +571,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   : null,
               child: auth.usuario?.fotoUrl == null
                   ? Icon(
-                auth.estaLogueado ? Icons.person : Icons.person_outline,
-                color: Colors.white,
-                size: 32,
-              )
+                      auth.estaLogueado
+                          ? Icons.person
+                          : Icons.person_outline,
+                      color: Colors.white,
+                      size: 32,
+                    )
                   : null,
             ),
             accountName: Text(
-              auth.estaLogueado ? auth.usuario!.nombreCompleto : 'Invitado',
+              auth.estaLogueado
+                  ? auth.usuario!.nombreCompleto
+                  : 'Invitado',
               style: const TextStyle(fontWeight: FontWeight.w700),
             ),
             accountEmail: Text(
@@ -575,72 +593,75 @@ class _DashboardScreenState extends State<DashboardScreen> {
             ),
           ),
 
-          _drawerItem(Icons.home_rounded, 'Inicio', onTap: () {
-            Navigator.pop(context);
-          }),
-          // Sebastian Florentino
-          _drawerItem(Icons.newspaper_rounded, 'Noticias', onTap: () {
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const NoticiasScreen()));
-          }),
-          _drawerItem(Icons.forum_rounded, 'Foro', onTap: () {
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const ForoScreen()));
-          }),
-          // Luis Smerling
-          _drawerItem(Icons.directions_car_rounded, 'Catálogo', onTap: () {
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const CatalogoScreen()));
-          }),
-          // Sebastian Florentino
-          _drawerItem(Icons.play_circle_rounded, 'Videos', onTap: () {
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const VideosScreen()));
-          }),
+          // Se envuelve la lista en Expanded y ListView para evitar overflow - Hecho por Sebastian Florentino
+          Expanded(
+            child: ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                _drawerItem(Icons.home_rounded, 'Inicio', onTap: () {
+                  Navigator.pop(context);
+                }),
+                _drawerItem(Icons.newspaper_rounded, 'Noticias', onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const NoticiasScreen()));
+                }),
+                _drawerItem(Icons.forum_rounded, 'Foro', onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const ForoScreen()));
+                }),
+                _drawerItem(Icons.directions_car_rounded, 'Catálogo'),
+                _drawerItem(Icons.play_circle_rounded, 'Videos', onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const VideosScreen()));
+                }),
 
-          if (auth.estaLogueado) ...[
-            const Divider(),
-            // Luis Smerling
-            _drawerItem(Icons.garage_rounded, 'Mis Vehículos', onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
-            }),
-            _drawerItem(Icons.build_rounded, 'Mantenimientos', onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const MisVehiculosScreen()));
-            }),
-            // Sebastian Florentino
-            _drawerItem(Icons.local_gas_station_rounded, 'Combustible', onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const CombustibleScreen()));
-            }),
-            _drawerItem(Icons.account_balance_wallet_rounded, 'Gastos', onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const GastosScreen()));
-            }),
-            _drawerItem(Icons.monetization_on_rounded, 'Ingresos', onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const IngresosScreen()));
-            }),
-            _drawerItem(Icons.person_outline, 'Mi Perfil', onTap: () {
-              Navigator.pop(context);
-              Navigator.push(context, MaterialPageRoute(builder: (_) => const PerfilScreen()));
-            }),
-          ],
+                // Opciones con login
+                if (auth.estaLogueado) ...[
+                  const Divider(),
+                  _drawerItem(Icons.garage_rounded, 'Mis Vehículos'),
+                  _drawerItem(Icons.build_rounded, 'Mantenimientos'),
+                  _drawerItem(Icons.local_gas_station_rounded, 'Combustible', onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const CombustibleScreen()));
+                  }),
+                  _drawerItem(Icons.account_balance_wallet_rounded, 'Gastos', onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const GastosScreen()));
+                  }),
+                  _drawerItem(Icons.monetization_on_rounded, 'Ingresos', onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const IngresosScreen()));
+                  }),
+                  _drawerItem(Icons.person_outline, 'Mi Perfil', onTap: () {
+                    Navigator.pop(context);
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PerfilScreen()),
+                    );
+                  }),
+                ],
 
+                const Divider(),
+                _drawerItem(Icons.info_outline_rounded, 'Acerca de', onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const AcercaScreen()),
+                  );
+                }),
+              ],
+            ),
+          ),
+
+          // Login / Logout fijo al fondo
           const Divider(),
-          _drawerItem(Icons.info_outline_rounded, 'Acerca de', onTap: () {
-            Navigator.pop(context);
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const AcercaScreen()));
-          }),
-
-          const Spacer(),
-
           if (auth.estaLogueado)
             ListTile(
               leading: const Icon(Icons.logout, color: AppColors.error),
-              title: const Text('Cerrar sesión',
-                  style: TextStyle(color: AppColors.error)),
+              title: const Text(
+                'Cerrar sesión',
+                style: TextStyle(color: AppColors.error),
+              ),
               onTap: () {
                 Navigator.pop(context);
                 auth.logout();
@@ -649,12 +670,16 @@ class _DashboardScreenState extends State<DashboardScreen> {
           else
             ListTile(
               leading: const Icon(Icons.login, color: AppColors.primary),
-              title: const Text('Iniciar sesión',
-                  style: TextStyle(color: AppColors.primary)),
+              title: const Text(
+                'Iniciar sesión',
+                style: TextStyle(color: AppColors.primary),
+              ),
               onTap: () {
                 Navigator.pop(context);
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => const LoginScreen()));
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const LoginScreen()),
+                );
               },
             ),
 
@@ -664,11 +689,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     );
   }
 
-  ListTile _drawerItem(IconData icono, String titulo, {VoidCallback? onTap}) {
+  ListTile _drawerItem(IconData icono, String titulo,
+      {VoidCallback? onTap}) {
     return ListTile(
       leading: Icon(icono, color: AppColors.textSecondary, size: 22),
-      title: Text(titulo,
-          style: const TextStyle(fontSize: 14, color: AppColors.textPrimary)),
+      title: Text(
+        titulo,
+        style: const TextStyle(fontSize: 14, color: AppColors.textPrimary),
+      ),
       onTap: onTap ?? () => Navigator.pop(context),
       dense: true,
     );
