@@ -18,14 +18,15 @@ class Combustible {
   });
 
   factory Combustible.fromJson(Map<String, dynamic> json) {
+    // Solución al error de casteo - Hecho por Sebastian Florentino
     return Combustible(
-      id: json['id'] as int,
-      vehiculoId: json['vehiculo_id'] as int,
-      tipo: json['tipo'] as String,
-      cantidad: (json['cantidad'] as num).toDouble(),
-      unidad: json['unidad'] as String,
-      monto: (json['monto'] as num).toDouble(),
-      fecha: json['fecha'] as String,
+      id: int.tryParse(json['id'].toString()) ?? 0,
+      vehiculoId: int.tryParse(json['vehiculo_id'].toString()) ?? 0,
+      tipo: json['tipo'] as String? ?? '',
+      cantidad: double.tryParse(json['cantidad'].toString()) ?? 0.0,
+      unidad: json['unidad'] as String? ?? '',
+      monto: double.tryParse(json['monto'].toString()) ?? 0.0,
+      fecha: json['fecha'] as String? ?? '',
     );
   }
 }
